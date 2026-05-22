@@ -1,4 +1,4 @@
-name: 🚀 Auto Deploy to Server
+name: Auto Deploy to Server
 
 on:
   push:
@@ -6,29 +6,20 @@ on:
       - main
 
 jobs:
-  web-deploy:
-    name: 📤 Deploy Website
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🚚 Get latest code
+      - name: Get latest code
         uses: actions/checkout@v4
 
-      - name: 📂 Sync Files via FTP/SFTP
+      - name: Sync Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # FTP uses 21, SFTP uses 22. Can be set via FTP_PORT secret or defaults to 21
-          port: ${{ secrets.FTP_PORT || 21 }}
-          # Local folder to deploy (deploying public_html content)
-          local-dir: ./public_html/
-          # Remote target directory on your hosting server (defaults to public_html/)
-          server-dir: ${{ secrets.REMOTE_DIR || './public_html/' }}
-          # Exclude configuration files, local database, and dependency folders
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .github/**
-            public_html/database.sqlite
+          protocol: ftp
+          port: 21
+          local-dir: ./
+          server-dir: /public_html/
