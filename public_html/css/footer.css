@@ -1,0 +1,63 @@
+/* ============================================
+   LuxeGlow Salon – Footer
+   footer.css  |  v2.0.1
+   ============================================ */
+
+.site-footer { background:var(--clr-black); border-top:1px solid rgba(255,255,255,.06); }
+
+/* ── Newsletter ───────────────────────────── */
+.footer-newsletter { background:linear-gradient(135deg,#130d07 0%,#1a1008 100%); border-bottom:1px solid rgba(201,169,110,.12); padding:3rem 0; }
+.newsletter-inner { display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+.newsletter-text h3 { font-family:var(--font-serif); font-size:var(--fs-2xl); color:var(--clr-gold-light); margin-bottom:.3rem; }
+.newsletter-text p  { font-size:var(--fs-sm); color:var(--clr-gray-400); }
+.newsletter-form { flex:1; min-width:280px; max-width:480px; }
+.newsletter-input-wrap { display:flex; gap:.5rem; background:rgba(255,255,255,.04); border:1px solid rgba(201,169,110,.2); border-radius:var(--radius-full); padding:.3rem .3rem .3rem 1.2rem; }
+.newsletter-input-wrap input { flex:1; background:none; border:none; color:var(--clr-white); font-family:var(--font-sans); font-size:var(--fs-sm); outline:none; min-width:0; }
+.newsletter-input-wrap input::placeholder { color:rgba(255,255,255,.3); }
+.newsletter-msg { font-size:var(--fs-xs); color:var(--clr-gold); margin-top:.5rem; min-height:1em; }
+
+/* ── Main Footer ──────────────────────────── */
+.footer-main { padding:4rem 0 2.5rem; }
+.footer-grid { display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; gap:3rem; }
+
+/* Brand col */
+.footer-logo { display:flex; align-items:baseline; gap:.4rem; text-decoration:none; margin-bottom:1rem; display:inline-flex; }
+.footer-logo .logo-icon  { font-size:1.3rem; color:var(--clr-gold); }
+.footer-logo .logo-text  { font-family:var(--font-serif); font-size:1.5rem; font-weight:600; background:var(--grad-gold); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:.04em; }
+.footer-desc { font-size:var(--fs-sm); color:var(--clr-gray-400); line-height:1.8; margin-bottom:1.5rem; }
+.footer-social { display:flex; gap:.6rem; flex-wrap:wrap; }
+.footer-social a { width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; color:var(--clr-gray-400); font-size:.85rem; transition:all var(--t-base) var(--ease-spring); }
+.footer-social a:hover { background:var(--clr-gold); border-color:var(--clr-gold); color:var(--clr-black); transform:translateY(-3px); }
+
+/* Link cols */
+.footer-heading { font-family:var(--font-sans); font-size:var(--fs-xs); font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--clr-gold); margin-bottom:1.2rem; }
+.footer-links { display:flex; flex-direction:column; gap:.6rem; list-style:none; }
+.footer-links a { font-size:var(--fs-sm); color:var(--clr-gray-400); transition:all var(--t-base); display:inline-flex; align-items:center; gap:.4rem; }
+.footer-links a::before { content:'→'; opacity:0; transform:translateX(-4px); transition:all var(--t-base); color:var(--clr-gold); }
+.footer-links a:hover { color:var(--clr-gold); padding-left:.3rem; }
+.footer-links a:hover::before { opacity:1; transform:none; }
+
+/* Contact col */
+.footer-contact-list { display:flex; flex-direction:column; gap:.8rem; }
+.footer-contact-list li { display:flex; align-items:flex-start; gap:.75rem; font-size:var(--fs-sm); color:var(--clr-gray-400); }
+.footer-contact-list i { color:var(--clr-gold); margin-top:.2rem; flex-shrink:0; width:14px; }
+.footer-contact-list a { color:var(--clr-gray-400); transition:color var(--t-base); }
+.footer-contact-list a:hover { color:var(--clr-gold); }
+
+/* ── Footer Bottom ────────────────────────── */
+.footer-bottom { border-top:1px solid rgba(255,255,255,.06); padding:1.2rem 0; }
+.footer-bottom-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.footer-bottom p { font-size:var(--fs-xs); color:var(--clr-gray-400); }
+.footer-legal { display:flex; gap:1.5rem; list-style:none; }
+.footer-legal a { font-size:var(--fs-xs); color:var(--clr-gray-400); transition:color var(--t-base); }
+.footer-legal a:hover { color:var(--clr-gold); }
+
+/* ── Responsive ───────────────────────────── */
+@media(max-width:1024px){ .footer-grid { grid-template-columns:1fr 1fr; } }
+@media(max-width:640px){
+    .footer-grid { grid-template-columns:1fr; gap:2rem; }
+    .newsletter-inner { flex-direction:column; }
+    .newsletter-form { max-width:100%; width:100%; }
+    .footer-bottom-inner { flex-direction:column; text-align:center; }
+    .footer-legal { justify-content:center; }
+}
