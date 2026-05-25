@@ -33,11 +33,9 @@ $heights=['280px','240px','300px','250px','270px','240px','260px','290px','240px
     <!-- Masonry -->
     <div class="gallery-grid" id="gallery-grid">
       <?php foreach($gallery_items as $i=>$item): 
-        // fallback heights for missing ones if db is large
-        $h = $heights[$i % count($heights)];
-        $cat_key = strtolower($item['category']);
+        $cat_key = strtolower(trim($item['category']));
       ?>
-      <div class="gallery-item img-zoom-wrap" data-cat="<?=$cat_key?>" style="height:<?=$h?>">
+      <div class="gallery-item img-zoom-wrap" data-cat="<?=htmlspecialchars($cat_key)?>" style="height:<?=$heights[$i % count($heights)]?>">
         <img src="<?=$IMG?>/<?=htmlspecialchars($item['image'])?>" alt="<?=htmlspecialchars($item['title'])?>" loading="lazy">
         <div class="gallery-overlay">
           <div style="text-align:center;color:#fff;padding:1rem;">
@@ -59,7 +57,7 @@ $heights=['280px','240px','300px','250px','270px','240px','260px','290px','240px
       <h2 class="section-title">Before & After</h2>
       <p class="section-subtitle">Witness the Muna's difference — stunning real transformations.</p>
     </div>
-    <div class="grid-3" data-stagger>
+    <div class="grid-3">
       <?php $ba=[
         ['service-haircolor.jpg','gallery-hair.jpg','Hair Colour Transformation','Dull to vibrant — full balayage colour makeover'],
         ['service-facial.jpg','service-facial.jpg','Skin Glow Treatment','Dull skin to radiant glow after gold facial'],
@@ -107,26 +105,85 @@ $heights=['280px','240px','300px','250px','270px','240px','260px','290px','240px
 
 <script>
 (function(){
-  const btns = document.querySelectorAll('#gallery-filter-btns .tab-btn');
-  const items = document.querySelectorAll('.gallery-item[data-cat]');
-  btns.forEach(btn => btn.addEventListener('click', () => {
-    btns.forEach(b => b.classList.remove('active')); btn.classList.add('active');
-    const f = btn.dataset.filter;
-    items.forEach(i => { i.style.opacity = f==='all'||i.dataset.cat===f ? '1':'0.15'; i.style.transition='opacity .3s'; });
-  }));
+  const btns  = document.querySelectorAll('#gallery-filter-btns .tab-btn');
+  const items = document.querySelectorAll('#gallery-grid .gallery-item[data-cat]');
 
-  // Simple lightbox
-  const lb = document.getElementById('lightbox');
-  const lbImg = lb?.querySelector('.lightbox-img');
-  const srcs = [...items].map(i => i.querySelector('img')?.src).filter(Boolean);
-  let cur = 0;
-  items.forEach((item,idx) => {
-    item.addEventListener('click', () => { cur=idx; if(lbImg) lbImg.src=srcs[cur]; lb?.classList.add('active'); document.body.style.overflow='hidden'; });
+  // Normalise: strip spaces, lowercase — so "Hair Care" → "hair care" matches filter "hair"
+  function catMatches(itemCat, filter) {
+    if (filter === 'all') return true;
+    // exact match first
+    if (itemCat === filter) return true;
+    // partial match: "hair care" should match filter "hair"
+    return itemCat.includes(filter);
+  }
+
+  function applyFilter(filter) {
+    items.forEach(item => {
+      const cat = (item.dataset.cat || '').toLowerCase().trim();
+      const show = catMatches(cat, filter);
+      // Use display:none so masonry columns reflow correctly
+      item.style.display    = show ? 'block' : 'none';
+      item.style.marginBottom = show ? '' : '0';
+    });
+  }
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.dataset.filter);
+    });
   });
-  lb?.querySelector('.lightbox-close')?.addEventListener('click', () => { lb.classList.remove('active'); document.body.style.overflow=''; });
-  lb?.querySelector('.lightbox-prev')?.addEventListener('click', () => { cur=(cur-1+srcs.length)%srcs.length; if(lbImg) lbImg.src=srcs[cur]; });
-  lb?.querySelector('.lightbox-next')?.addEventListener('click', () => { cur=(cur+1)%srcs.length; if(lbImg) lbImg.src=srcs[cur]; });
-  lb?.addEventListener('click', e => { if(e.target===lb){ lb.classList.remove('active'); document.body.style.overflow=''; } });
+
+  // Show all on load
+  applyFilter('all');
+
+  // Lightbox
+  const lb    = document.getElementById('lightbox');
+  const lbImg = lb?.querySelector('.lightbox-img');
+  let allSrcs = [];
+  let cur = 0;
+
+  function buildSrcs() {
+    // Only visible items in lightbox
+    allSrcs = [...items]
+      .filter(i => i.style.display !== 'none')
+      .map(i => i.querySelector('img')?.src)
+      .filter(Boolean);
+  }
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      buildSrcs();
+      const src = item.querySelector('img')?.src;
+      cur = allSrcs.indexOf(src);
+      if (cur < 0) cur = 0;
+      if (lbImg) lbImg.src = allSrcs[cur];
+      lb?.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  lb?.querySelector('.lightbox-close')?.addEventListener('click', () => {
+    lb.classList.remove('active'); document.body.style.overflow = '';
+  });
+  lb?.querySelector('.lightbox-prev')?.addEventListener('click', () => {
+    cur = (cur - 1 + allSrcs.length) % allSrcs.length;
+    if (lbImg) lbImg.src = allSrcs[cur];
+  });
+  lb?.querySelector('.lightbox-next')?.addEventListener('click', () => {
+    cur = (cur + 1) % allSrcs.length;
+    if (lbImg) lbImg.src = allSrcs[cur];
+  });
+  lb?.addEventListener('click', e => {
+    if (e.target === lb) { lb.classList.remove('active'); document.body.style.overflow = ''; }
+  });
+  document.addEventListener('keydown', e => {
+    if (!lb?.classList.contains('active')) return;
+    if (e.key === 'Escape') { lb.classList.remove('active'); document.body.style.overflow = ''; }
+    if (e.key === 'ArrowLeft') lb.querySelector('.lightbox-prev')?.click();
+    if (e.key === 'ArrowRight') lb.querySelector('.lightbox-next')?.click();
+  });
 })();
 </script>
 

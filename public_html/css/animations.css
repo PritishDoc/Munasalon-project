@@ -160,3 +160,27 @@
         transform: none !important;
     }
 }
+
+/* ── GSAP Safety Net ──────────────────────────
+   GSAP's gsap.from() sets inline opacity:0 on elements before animating.
+   If ScrollTrigger never fires (element already in view at load, or GSAP
+   fails to load), the element stays invisible forever.
+   This rule ensures critical content cards are ALWAYS visible after 1s,
+   overriding any stale inline GSAP style.
+   The !important only kicks in after the CSS animation delay has passed.
+──────────────────────────────────────────────── */
+.service-card,
+.why-card,
+.blog-card,
+.testimonial-card,
+.gallery-item,
+.product-card {
+    animation: gsapSafetyNet 0s 1.5s forwards;
+}
+
+@keyframes gsapSafetyNet {
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
