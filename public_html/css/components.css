@@ -267,3 +267,984 @@ select.form-control option { background:#1a1a1a; color:var(--clr-white); }
 
 /* -- Glass gold card ------------------------ */
 .glass-gold { background:rgba(201,169,110,.05); border:1px solid rgba(201,169,110,.15); backdrop-filter:blur(12px); }
+
+/* ============================================
+   See More Button Styles (Unified)
+   ============================================ */
+
+.btn-see-more {
+    background: transparent;
+    color: var(--clr-white);
+    border: 1px solid #333;
+    border-radius: var(--radius-full);
+    padding: 0.85rem 2rem;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-see-more:hover {
+    background: rgba(201, 169, 110, 0.1);
+    border-color: var(--clr-gold);
+    color: var(--clr-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(201, 169, 110, 0.15);
+}
+
+.btn-see-more:active {
+    transform: translateY(0);
+}
+
+.btn-see-more i {
+    transition: transform 0.3s ease;
+}
+
+.btn-see-more.loading i {
+    animation: rotateIcon 1s linear infinite;
+}
+
+@keyframes rotateIcon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Hidden Items Styles */
+.service-card.service-hidden,
+.offer-card.offer-hidden,
+.why-card.whyus-hidden {
+    display: none;
+}
+
+/* Animation for showing items */
+.service-card.service-show-animation,
+.offer-card.offer-show-animation,
+.why-card.whyus-show-animation {
+    animation: fadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/*  */
+
+/* Add to components.css or a new team-section.css */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-xl);
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--sp-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.team-card {
+    text-align: center;
+    transition: transform var(--t-base) var(--ease-spring), box-shadow var(--t-base);
+    background: var(--grad-card);
+    border: 1px solid rgba(201, 169, 110, 0.1);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1rem;
+}
+
+.team-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201, 169, 110, 0.3);
+    box-shadow: var(--shadow-gold);
+}
+
+.team-img-wrap {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.2rem;
+}
+
+.team-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid rgba(201, 169, 110, 0.3);
+    transition: border-color var(--t-base);
+}
+
+.team-card:hover .team-img-wrap img {
+    border-color: var(--clr-gold);
+}
+
+.team-card h3 {
+    font-size: var(--fs-lg);
+    color: var(--clr-white);
+    margin-bottom: 0.2rem;
+}
+
+.team-role {
+    font-size: var(--fs-xs);
+    color: var(--clr-gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+/* Hidden team members initially */
+.team-card.team-hidden {
+    display: none;
+}
+
+/* Animation for showing team members */
+.team-card.team-show-animation {
+    animation: teamFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes teamFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* See More Container */
+.team-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--sp-xl);
+}
+
+/* See More Button Styles */
+.btn-see-more {
+    background: transparent;
+    color: var(--clr-white);
+    border: 1px solid #333;
+    border-radius: var(--radius-full);
+    padding: 0.85rem 2rem;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-see-more:hover {
+    background: rgba(201, 169, 110, 0.1);
+    border-color: var(--clr-gold);
+    color: var(--clr-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(201, 169, 110, 0.15);
+}
+
+.btn-see-more:active {
+    transform: translateY(0);
+}
+
+.btn-see-more i {
+    transition: transform 0.3s ease;
+}
+
+.btn-see-more.loading i {
+    animation: rotateIcon 1s linear infinite;
+}
+
+@keyframes rotateIcon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .team-card.team-show-animation {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+
+
+
+/* ============================================
+   Services.php Grid & See More & show Less (Add to sections.css)
+   ============================================ */
+
+   .guarantee-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.guarantee-card {
+    background: var(--grad-card);
+    border: 1px solid rgba(201, 169, 110, 0.1);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all var(--t-base) var(--ease-spring);
+}
+
+.guarantee-card:hover {
+    border-color: rgba(201, 169, 110, 0.3);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-gold);
+}
+
+.guarantee-card .why-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    background: rgba(201, 169, 110, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--clr-gold);
+    transition: all var(--t-base) var(--ease-spring);
+}
+
+.guarantee-card:hover .why-icon {
+    background: var(--clr-gold);
+    color: var(--clr-black);
+    transform: scale(1.1);
+}
+
+.guarantee-card h3 {
+    font-size: var(--fs-lg);
+    color: var(--clr-white);
+    margin-bottom: 0.5rem;
+}
+
+.guarantee-card p {
+    font-size: var(--fs-sm);
+    color: var(--clr-gray-400);
+}
+
+/* Initially hidden guarantees */
+.guarantee-card.guarantee-hidden {
+    display: none;
+}
+
+.guarantee-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+/* Animation for showing services & guarantees */
+.service-card.service-show-animation,
+.guarantee-card.guarantee-show-animation {
+    animation: cardFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cardFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* See More Button Styles */
+.btn-see-more {
+    background: transparent;
+    color: var(--clr-white);
+    border: 1px solid #333;
+    border-radius: var(--radius-full);
+    padding: 0.85rem 2rem;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-see-more:hover {
+    background: rgba(201, 169, 110, 0.1);
+    border-color: var(--clr-gold);
+    color: var(--clr-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(201, 169, 110, 0.15);
+}
+
+.btn-see-more:active {
+    transform: translateY(0);
+}
+
+.btn-see-more i {
+    transition: transform 0.3s ease;
+}
+
+.btn-see-more.loading i {
+    animation: rotateIcon 1s linear infinite;
+}
+
+@keyframes rotateIcon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .guarantee-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .guarantee-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Team Section Styles */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-xl);
+    margin-bottom: 2rem;
+}
+
+.team-card {
+    text-align: center;
+    transition: transform var(--t-base) var(--ease-spring), box-shadow var(--t-base);
+    background: var(--grad-card);
+    border: 1px solid rgba(201, 169, 110, 0.1);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1rem;
+}
+
+.team-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201, 169, 110, 0.3);
+    box-shadow: var(--shadow-gold);
+}
+
+.team-img-wrap {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.2rem;
+}
+
+.team-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid rgba(201, 169, 110, 0.3);
+    transition: border-color var(--t-base);
+}
+
+.team-card:hover .team-img-wrap img {
+    border-color: var(--clr-gold);
+}
+
+.team-card h3 {
+    font-size: var(--fs-lg);
+    color: var(--clr-white);
+    margin-bottom: 0.2rem;
+}
+
+.team-role {
+    font-size: var(--fs-xs);
+    color: var(--clr-gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.team-experience {
+    font-size: 0.8rem;
+    color: var(--clr-gold);
+    margin-top: 0.3rem;
+}
+
+.team-card.team-hidden {
+    display: none;
+}
+
+.team-card.team-show-animation {
+    animation: cardFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.team-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+@media (max-width: 1024px) {
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--sp-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .service-card.service-show-animation,
+    .guarantee-card.guarantee-show-animation,
+    .team-card.team-show-animation {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+
+/* ============================================
+   Gallery Page Styles
+   ============================================ */
+
+/* Gallery Grid - Masonry */
+.gallery-grid {
+    columns: 3 280px;
+    gap: 1.5rem;
+}
+
+.gallery-grid .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+}
+
+.gallery-grid .gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s var(--ease-smooth);
+}
+
+.gallery-grid .gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-zoom-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--clr-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-black);
+    font-size: 1.2rem;
+    transform: scale(0.7);
+    transition: transform 0.3s var(--ease-spring);
+}
+
+.gallery-item:hover .gallery-zoom-icon {
+    transform: scale(1);
+}
+
+.gallery-title {
+    color: var(--clr-white);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Hidden gallery items for filter functionality */
+.gallery-item.gallery-hidden {
+    display: none;
+}
+
+/* See More Container */
+.gallery-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+/* Before & After Grid */
+.before-after-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.ba-card {
+    background: var(--grad-card);
+    border: 1px solid rgba(201, 169, 110, 0.1);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--t-base) var(--ease-spring);
+}
+
+.ba-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(201, 169, 110, 0.3);
+    box-shadow: var(--shadow-gold);
+}
+
+.ba-card.ba-hidden {
+    display: none;
+}
+
+.ba-card.ba-show-animation {
+    animation: cardFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.ba-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    position: relative;
+}
+
+.ba-before,
+.ba-after {
+    position: relative;
+    overflow: hidden;
+}
+
+.ba-before img,
+.ba-after img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.ba-before img {
+    filter: grayscale(40%);
+}
+
+.ba-label {
+    position: absolute;
+    bottom: 0.75rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+}
+
+.before-label {
+    left: 0.75rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: #999;
+}
+
+.after-label {
+    right: 0.75rem;
+    background: var(--clr-gold);
+    color: var(--clr-black);
+}
+
+.ba-content {
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.ba-content h3 {
+    font-size: var(--fs-md);
+    color: var(--clr-white);
+    margin-bottom: 0.5rem;
+}
+
+.ba-content p {
+    font-size: var(--fs-sm);
+    color: var(--clr-gray-400);
+}
+
+.ba-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+/* ============================================
+   Products Page - See More/Show Less
+   ============================================ */
+
+/* Hidden products initially */
+.product-card.product-hidden {
+    display: none;
+}
+
+/* Animation for showing products */
+.product-card.product-show-animation {
+    animation: productFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes productFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Products See More Container */
+.products-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .before-after-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-grid {
+        columns: 2 250px;
+        gap: 1rem;
+    }
+    .before-after-grid {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        columns: 1;
+    }
+}
+
+
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Hidden products initially */
+.product-card.product-hidden {
+    display: none;
+}
+
+/* Animation for showing products */
+.product-card.product-show-animation {
+    animation: productFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes productFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Products See More Container */
+.products-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+/* Product Search */
+.product-search {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto 2rem;
+}
+
+.product-search input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    color: var(--clr-white);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+}
+
+.product-search input:focus {
+    outline: none;
+    border-color: var(--clr-gold);
+}
+
+.product-search i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--clr-gray-400);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+
+
+/* ============================================
+   Blog Page Styles & Animations
+   ============================================ */
+
+/* Blog Grid */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Hidden blog posts initially */
+.blog-card.blog-hidden {
+    display: none;
+}
+
+/* Animation for showing blog posts */
+.blog-card.blog-show-animation {
+    animation: blogFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes blogFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Blog See More Container */
+.blog-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+/* ============================================
+   Before & After Gallery Animations
+   ============================================ */
+
+/* Hidden BA items initially */
+.ba-card.ba-hidden {
+    display: none;
+}
+
+/* Animation for showing BA items */
+.ba-card.ba-show-animation {
+    animation: baFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes baFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* BA See More Container */
+.ba-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+/* ============================================
+   Services Guarantee Card Animations
+   ============================================ */
+
+/* Hidden guarantees initially */
+.guarantee-card.guarantee-hidden {
+    display: none;
+}
+
+/* Animation for showing guarantees */
+.guarantee-card.guarantee-show-animation {
+    animation: guaranteeFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes guaranteeFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Guarantee See More Container */
+.guarantee-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+/* Services Hidden Cards */
+.service-card.service-hidden {
+    display: none;
+}
+
+.service-card.service-show-animation {
+    animation: cardFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.services-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+@keyframes cardFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .service-card.service-show-animation,
+    .guarantee-card.guarantee-show-animation,
+    .blog-card.blog-show-animation,
+    .ba-card.ba-show-animation,
+    .team-card.team-show-animation,
+    .why-card.whyus-show-animation,
+    .offer-card.offer-show-animation {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}

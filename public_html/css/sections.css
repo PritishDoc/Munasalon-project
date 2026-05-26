@@ -199,3 +199,41 @@
     .hero-deco { display:none; }
     .stats-grid { grid-template-columns:1fr 1fr; }
 }
+
+/* code for services-> see More & show less feature */
+
+/* ============================================
+   Services Grid & See More (Add to sections.css)
+   ============================================ */
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Initially hide services beyond limit */
+.service-card.service-hidden {
+    display: none;
+}
+
+/* See More Container */
+.services-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -110,9 +110,10 @@ include __DIR__ . '/php/header.php';
       <h2 class="section-title">Our Star Team</h2>
       <p class="section-subtitle">Certified professionals passionate about making you look and feel your absolute best.</p>
     </div>
-    <div class="grid-4" data-stagger>
-      <?php $team=[
-        ['team-founder.jpg','Muna Founder','Founder & Creative Director','15+ yrs experience'],
+    <div class="team-grid" id="team-grid" data-stagger>
+      <?php 
+      $allTeam = [
+        ['team-founder.jpg','Muna','Founder & Creative Director','15+ yrs experience'],
         ['service-haircut.jpg','Arjun Shah','Master Hair Stylist','International certified'],
         ['service-bridal.jpg','Meena Rao','Bridal Makeup Artist','500+ brides served'],
         ['service-spa.jpg','Dev Patel','Spa & Wellness Expert','Aromatherapy specialist'],
@@ -120,17 +121,44 @@ include __DIR__ . '/php/header.php';
         ['gallery-grooming.jpg','Kiran Nair','Men\'s Grooming Expert','Barber of the Year 2023'],
         ['service-facial.jpg','Sunita Verma','Skincare Specialist','Dermatologist trained'],
         ['service-haircolor.jpg','Rohan Das','Color Technician','L\'Oréal certified master'],
-      ]; foreach($team as $t): ?>
-      <div class="team-card" data-reveal="fade-up">
-        <div class="team-img-wrap">
-          <img src="<?=$IMG?>/<?=$t[0]?>" alt="<?=$t[1]?>" style="width:180px;height:180px;border-radius:50%;object-fit:cover;border:3px solid rgba(201,169,110,.3);">
+        ['service-bridal.jpg','Anjali Mehta','Bridal & Editorial MUA','HD & Airbrush expert'],
+        ['service-spa.jpg','Vikram Raj','Senior Massage Therapist','Ayurveda specialist'],
+        ['service-nails.jpg','Neha Singh','Nail Technician','Gel & Nail Art pro'],
+        ['service-haircut.jpg','Kabir Khan','Barber','Precision & fades'],
+      ];
+      $initialTeam = array_slice($allTeam, 0, 8); // Show first 8 initially
+      $hiddenTeam = array_slice($allTeam, 8);    // Remaining hidden
+      foreach($initialTeam as $t): ?>
+        <div class="team-card" data-reveal="fade-up">
+          <div class="team-img-wrap">
+            <img src="<?=$IMG?>/<?=$t[0]?>" alt="<?=$t[1]?>">
+          </div>
+          <h3><?=$t[1]?></h3>
+          <div class="team-role"><?=$t[2]?></div>
+          <p style="font-size:.8rem;color:var(--clr-gold);margin-top:.3rem;"><?=$t[3]?></p>
         </div>
-        <h3><?=$t[1]?></h3>
-        <div class="team-role"><?=$t[2]?></div>
-        <p style="font-size:.8rem;color:var(--clr-gold);margin-top:.3rem;"><?=$t[3]?></p>
-      </div>
+      <?php endforeach; ?>
+      
+      <?php foreach($hiddenTeam as $t): ?>
+        <div class="team-card team-hidden" data-reveal="fade-up">
+          <div class="team-img-wrap">
+            <img src="<?=$IMG?>/<?=$t[0]?>" alt="<?=$t[1]?>">
+          </div>
+          <h3><?=$t[1]?></h3>
+          <div class="team-role"><?=$t[2]?></div>
+          <p style="font-size:.8rem;color:var(--clr-gold);margin-top:.3rem;"><?=$t[3]?></p>
+        </div>
       <?php endforeach; ?>
     </div>
+    
+    <!-- See More / Show Less Button for Team -->
+    <?php if(count($hiddenTeam) > 0): ?>
+    <div class="team-see-more-container" data-reveal="fade-up">
+      <button id="see-more-team-btn" class="btn-see-more">
+        See More Team <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 

@@ -151,7 +151,7 @@ include __DIR__ . '/php/header.php';
     <!-- See More Button (only if there are more than 6 services) -->
     <?php if ($hasMoreServices): ?>
     <div style="text-align:center;margin-top:3rem;" data-reveal="fade-up">
-      <button id="see-more-services-btn" class="btn btn-outline" style="background: transparent; color: var(--clr-white); border: 1px solid #333;">
+      <button id="see-more-services-btn" class="btn-see-more" data-section="services">
         See More Services <i class="fas fa-arrow-down"></i>
       </button>
     </div>
@@ -173,14 +173,26 @@ include __DIR__ . '/php/header.php';
       <span class="section-eyebrow">Limited Time Deals</span>
       <h2 class="section-title">Exclusive Offers</h2>
     </div>
-    <div class="offers-grid" data-stagger>
-      <?php $offers=[
+    <div class="offers-grid" id="offers-grid-container">
+      <?php 
+      $offers = [
         ['service-bridal.jpg','Flat 30% OFF','Bridal Packages','Complete bridal makeover at 30% off. Limited slots available!','2026-06-30'],
         ['service-haircolor.jpg','Free Hair Spa','With Hair Color','Complimentary hair spa with any hair coloring service you book.','2026-06-15'],
         ['service-spa.jpg','Couple Spa','Special Package','A romantic spa experience for couples at exclusive pricing.','2026-06-20'],
         ['service-facial.jpg','Festival Beauty','Special Package','Complete festive makeover — hair, skin & makeup in one package.','2026-07-01'],
-      ]; foreach($offers as $o): ?>
-      <div class="offer-card">
+        ['service-facial.jpg','Summer Glow','Special Package','Get that summer glow with our special facial package.','2026-07-15'],
+        ['service-facial.jpg','Luxury Spa','Premium Package','Ultimate relaxation with our luxury spa experience.','2026-07-31'],
+        ['service-facial.jpg','Hair Treatment','Special Offer','Advanced hair treatment at discounted price.','2026-07-20'],
+        ['service-facial.jpg','Makeup Workshop','Learning Session','Learn pro makeup techniques from our experts.','2026-08-10'],
+      ];
+      $offersToShow = 4; // Number of offers to show initially
+      $totalOffers = count($offers);
+      $hasMoreOffers = $totalOffers > $offersToShow;
+      
+      foreach($offers as $index => $o): 
+        $hiddenClass = ($index >= $offersToShow) ? 'offer-hidden' : '';
+      ?>
+      <div class="offer-card <?= $hiddenClass ?>">
         <img class="offer-card-bg" src="<?=$IMG?>/<?=$o[0]?>" alt="<?=$o[2]?>" loading="lazy">
         <div class="offer-card-content">
           <span class="offer-badge"><?=$o[1]?></span>
@@ -191,6 +203,15 @@ include __DIR__ . '/php/header.php';
       </div>
       <?php endforeach; ?>
     </div>
+    
+    <!-- See More Button for Offers (only if there are more than 4 offers) -->
+    <?php if ($hasMoreOffers): ?>
+    <div style="text-align:center;margin-top:3rem;" data-reveal="fade-up">
+      <button id="see-more-offers-btn" class="btn-see-more" data-section="offers">
+        See More Offers <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 
@@ -203,18 +224,42 @@ include __DIR__ . '/php/header.php';
       <span class="section-eyebrow">Why Muna's</span>
       <h2 class="section-title">The Muna's Difference</h2>
     </div>
-    <div class="grid-3">
-      <?php foreach([
+    <div class="grid-3" id="whyus-grid-container">
+      <?php 
+      $whyUsItems = [
         ['🏆','Certified Professionals','Every stylist is certified and trained in latest international techniques.'],
         ['🧹','Hygienic Environment','Hospital-grade sterilization. Fresh towels, tools and products every visit.'],
         ['💎','Premium Products','We only use globally trusted brands — L\'Oréal, Schwarzkopf, Lakmé.'],
         ['💰','Affordable Luxury','World-class salon experience at prices that won\'t break your budget.'],
         ['✨','Personalized Service','Tailored consultation for every client. Your beauty, your way.'],
         ['❤️','10+ Years of Trust','Over a decade of happy clients who keep coming back.'],
-      ] as $w): ?>
-      <div class="why-card"><div class="why-icon"><?=$w[0]?></div><h3><?=$w[1]?></h3><p><?=$w[2]?></p></div>
+        ['🌟','Latest Techniques','We stay updated with the latest international beauty trends.'],
+        ['🕐','Flexible Hours','Early morning and late evening appointments available.'],
+        ['📍','Prime Location','Easily accessible salon in the heart of the city.'],
+      ];
+      $whyUsToShow = 6; // Number of items to show initially
+      $totalWhyUs = count($whyUsItems);
+      $hasMoreWhyUs = $totalWhyUs > $whyUsToShow;
+      
+      foreach($whyUsItems as $index => $w): 
+        $hiddenClass = ($index >= $whyUsToShow) ? 'whyus-hidden' : '';
+      ?>
+      <div class="why-card <?= $hiddenClass ?>">
+        <div class="why-icon"><?=$w[0]?></div>
+        <h3><?=$w[1]?></h3>
+        <p><?=$w[2]?></p>
+      </div>
       <?php endforeach; ?>
     </div>
+    
+    <!-- See More Button for Why Us (only if there are more than 6 items) -->
+    <?php if ($hasMoreWhyUs): ?>
+    <div style="text-align:center;margin-top:3rem;" data-reveal="fade-up">
+      <button id="see-more-whyus-btn" class="btn-see-more" data-section="whyus">
+        See More <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 

@@ -39,9 +39,16 @@ if (empty($categories)) {
 
     <?php foreach($categories as $cat=>$services): ?>
     <div class="services-cat-panel <?=$cat===$first_cat?'active':''?>" data-category-panel="<?=htmlspecialchars($cat)?>" style="<?=$cat!==$first_cat?'display:none':''?>">
-      <div class="services-grid align-start">
-        <?php foreach($services as $s): ?>
-        <div class="service-card hover-lift">
+      <div class="services-grid align-start" id="services-grid-<?=htmlspecialchars($cat)?>">
+        <?php 
+        // For "General" category, apply see more logic (show first 6, hide rest)
+        $isGeneral = ($cat === 'General');
+        $visibleCount = $isGeneral ? 6 : count($services);
+        $serviceIndex = 0;
+        foreach($services as $s): 
+          $isHidden = $isGeneral && $serviceIndex >= $visibleCount;
+        ?>
+        <div class="service-card hover-lift <?=$isHidden ? 'service-hidden' : ''?>" data-service-index="<?=$serviceIndex?>">
           <div class="service-card-img">
             <img src="<?=$IMG?>/<?=htmlspecialchars($s['image'])?>" alt="<?=htmlspecialchars($s['title'])?>" loading="lazy">
           </div>
@@ -57,26 +64,73 @@ if (empty($categories)) {
             </div>
           </div>
         </div>
-        <?php endforeach; ?>
+        <?php 
+          $serviceIndex++;
+        endforeach; 
+        ?>
       </div>
+      
+      <!-- See More / Show Less Button for General Category -->
+      <?php if($isGeneral && count($services) > $visibleCount): ?>
+      <div class="services-see-more-container" data-category="<?=htmlspecialchars($cat)?>" id="services-see-more-container-<?=htmlspecialchars($cat)?>">
+        <button class="btn-see-more services-see-more-btn" data-category-see-more="<?=htmlspecialchars($cat)?>">
+          See More Services <i class="fas fa-arrow-down"></i>
+        </button>
+      </div>
+      <?php endif; ?>
     </div>
     <?php endforeach; ?>
 
   </div>
 </section>
 
-<!-- Why book with us -->
-<section class="section section-dark">
+<!-- Why book with us (Service Guarantee) -->
+<section class="section section-dark" id="service-guarantee-section">
   <div class="container">
     <div class="section-header" data-reveal="fade-up">
       <span class="section-eyebrow">Our Promise</span>
       <h2 class="section-title">Service Guarantee</h2>
     </div>
-    <div class="grid-3">
-      <?php foreach([['⏱️','On-Time Service','We respect your time. Services start on schedule, always.'],['💯','Satisfaction Guaranteed','Not happy? We\'ll redo the service at no extra charge.'],['🔒','Safe & Hygienic','Hospital-grade sterilization for every tool and surface.']] as $g): ?>
-      <div class="why-card"><div class="why-icon"><?=$g[0]?></div><h3><?=$g[1]?></h3><p><?=$g[2]?></p></div>
+    <div class="guarantee-grid" id="guarantee-grid">
+      <?php 
+      $allGuarantees = [
+        ['⏱️','On-Time Service','We respect your time. Services start on schedule, always.'],
+        ['💯','Satisfaction Guaranteed','Not happy? We\'ll redo the service at no extra charge.'],
+        ['🔒','Safe & Hygienic','Hospital-grade sterilization for every tool and surface.'],
+        ['✨','Premium Products','Only the finest luxury brands used for every service.'],
+        ['👥','Expert Stylists','All our professionals are certified with 5+ years experience.'],
+        ['🎯','Personalized Care','Every service is tailored to your unique needs and preferences.'],
+        ['🔄','Easy Rescheduling','Free rescheduling up to 24 hours before appointment.'],
+        ['🏆','Award-Winning Service','Recognized as Best Unisex Salon 2024.'],
+      ];
+      $visibleGuarantees = array_slice($allGuarantees, 0, 6);
+      $hiddenGuarantees = array_slice($allGuarantees, 6);
+      ?>
+      
+      <?php foreach($visibleGuarantees as $g): ?>
+      <div class="guarantee-card" data-reveal="fade-up">
+        <div class="why-icon"><?=$g[0]?></div>
+        <h3><?=$g[1]?></h3>
+        <p><?=$g[2]?></p>
+      </div>
+      <?php endforeach; ?>
+      
+      <?php foreach($hiddenGuarantees as $g): ?>
+      <div class="guarantee-card guarantee-hidden" data-reveal="fade-up" data-guarantee-hidden="true">
+        <div class="why-icon"><?=$g[0]?></div>
+        <h3><?=$g[1]?></h3>
+        <p><?=$g[2]?></p>
+      </div>
       <?php endforeach; ?>
     </div>
+    
+    <?php if(count($hiddenGuarantees) > 0): ?>
+    <div class="guarantee-see-more-container" data-reveal="fade-up" id="guarantee-see-more-container">
+      <button id="see-more-guarantee-btn" class="btn-see-more">
+        See More Benefits <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 
@@ -89,18 +143,5 @@ if (empty($categories)) {
     </div>
   </div>
 </section>
-
-<script>
-document.getElementById('service-tabs')?.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const cat = btn.dataset.category;
-    document.querySelectorAll('[data-category-panel]').forEach(p => {
-      p.style.display = p.dataset.categoryPanel === cat ? '' : 'none';
-    });
-  });
-});
-</script>
 
 <?php include __DIR__ . '/php/footer.php'; ?>

@@ -7,10 +7,82 @@ $active_page = 'gallery';
 $IMG = '/images';
 include __DIR__ . '/php/header.php';
 
-$gallery_items = $db->query("SELECT * FROM gallery ORDER BY id DESC")->fetchAll();
-$heights=['280px','240px','300px','250px','270px','240px','260px','290px','240px','260px','250px','280px'];
+/* ============================================================
+   GALLERY ITEMS — DUMMY DATA (for UI demo / team review)
+   Each category has 7–8 items so See More / Show Less is testable.
+
+   ➜ WHEN CONNECTING TO DB: replace $gallery_items below with:
+       $gallery_items = $db->query("SELECT * FROM gallery ORDER BY id DESC")->fetchAll();
+   ============================================================ */
+$gallery_items = [
+    // ── Hair (8 items) ──────────────────────────────────────────
+    ['id'=>1001, 'category'=>'hair',     'image'=>'gallery-hair.jpg',      'title'=>'Silk Blowout'],
+    ['id'=>1002, 'category'=>'hair',     'image'=>'service-haircolor.jpg', 'title'=>'Balayage Colour'],
+    ['id'=>1003, 'category'=>'hair',     'image'=>'gallery-hair.jpg',      'title'=>'Keratin Treatment'],
+    ['id'=>1004, 'category'=>'hair',     'image'=>'service-haircolor.jpg', 'title'=>'Ombre Style'],
+    ['id'=>1005, 'category'=>'hair',     'image'=>'gallery-hair.jpg',      'title'=>'Deep Conditioning'],
+    ['id'=>1006, 'category'=>'hair',     'image'=>'service-haircolor.jpg', 'title'=>'Hair Spa'],
+    ['id'=>1007, 'category'=>'hair',     'image'=>'gallery-hair.jpg',      'title'=>'Scalp Treatment'],
+    ['id'=>1008, 'category'=>'hair',     'image'=>'service-haircolor.jpg', 'title'=>'Highlights'],
+    // ── Bridal (7 items) ────────────────────────────────────────
+    ['id'=>2001, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Bridal Glow Makeup'],
+    ['id'=>2002, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Reception Look'],
+    ['id'=>2003, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Engagement Glam'],
+    ['id'=>2004, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Mehndi Look'],
+    ['id'=>2005, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Haldi Look'],
+    ['id'=>2006, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Sangeet Night'],
+    ['id'=>2007, 'category'=>'bridal',   'image'=>'service-bridal.jpg',    'title'=>'Wedding Updo'],
+    // ── Nails (7 items) ─────────────────────────────────────────
+    ['id'=>3001, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'Gel Nails'],
+    ['id'=>3002, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'French Tips'],
+    ['id'=>3003, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'Nail Art'],
+    ['id'=>3004, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'Ombre Nails'],
+    ['id'=>3005, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'3D Nail Design'],
+    ['id'=>3006, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'Chrome Powder'],
+    ['id'=>3007, 'category'=>'nails',    'image'=>'service-nails.jpg',     'title'=>'Acrylic Extension'],
+    // ── Spa (7 items) ───────────────────────────────────────────
+    ['id'=>4001, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'Gold Facial'],
+    ['id'=>4002, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'Body Polish'],
+    ['id'=>4003, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'Aroma Massage'],
+    ['id'=>4004, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'De-Tan Pack'],
+    ['id'=>4005, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'Head Massage'],
+    ['id'=>4006, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'Foot Reflexology'],
+    ['id'=>4007, 'category'=>'spa',      'image'=>'service-facial.jpg',    'title'=>'Back Massage'],
+    // ── Grooming (7 items) ──────────────────────────────────────
+    ['id'=>5001, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Beard Trim'],
+    ['id'=>5002, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Clean Shave'],
+    ['id'=>5003, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Hair & Beard Combo'],
+    ['id'=>5004, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Fade Cut'],
+    ['id'=>5005, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Skin Fade'],
+    ['id'=>5006, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Undercut Style'],
+    ['id'=>5007, 'category'=>'grooming', 'image'=>'service-groom.jpg',     'title'=>'Beard Colour'],
+    // ── Skin (7 items) ──────────────────────────────────────────
+    ['id'=>6001, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Acne Treatment'],
+    ['id'=>6002, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Pigmentation Fix'],
+    ['id'=>6003, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Anti-Ageing Glow'],
+    ['id'=>6004, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Hydra Facial'],
+    ['id'=>6005, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Microdermabrasion'],
+    ['id'=>6006, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Vitamin C Boost'],
+    ['id'=>6007, 'category'=>'skin',     'image'=>'service-facial.jpg',    'title'=>'Brightening Peel'],
+];
+
+/* ── Gallery grid config ────────────────────────────────────── */
+$GALLERY_SHOW_LIMIT = 6; // cards shown per filter before "See More"
+
+// Before & After items
+$before_after_items = [
+    ['service-haircolor.jpg', 'gallery-hair.jpg',   'Hair Colour Transformation', 'Dull to vibrant — full balayage colour makeover'],
+    ['service-facial.jpg',    'service-facial.jpg', 'Skin Glow Treatment',        'Dull skin to radiant glow after gold facial'],
+    ['service-bridal.jpg',    'service-bridal.jpg', 'Bridal Makeover',            'Natural look to full flawless bridal makeup'],
+    ['service-haircolor.jpg', 'gallery-hair.jpg',   'Keratin Transformation',     'Frizzy to silky smooth after keratin treatment'],
+    ['service-facial.jpg',    'service-facial.jpg', 'De-Tan Treatment',           'Tanned skin restored to even, glowing tone'],
+    ['service-bridal.jpg',    'service-bridal.jpg', 'Engagement Look',            'Everyday look elevated to soft glam for engagement'],
+    ['service-haircolor.jpg', 'gallery-hair.jpg',   'Highlights Makeover',        'Plain hair transformed with golden highlights'],
+];
+$BA_SHOW_LIMIT = 3;
 ?>
 
+<!-- HERO SECTION -->
 <section style="padding:12rem 0 5rem;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;"><img src="<?=$IMG?>/gallery-hair.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
   <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,3,1,.92),rgba(10,6,2,.80));"></div>
@@ -21,69 +93,85 @@ $heights=['280px','240px','300px','250px','270px','240px','260px','290px','240px
   </div>
 </section>
 
-<section class="section">
+<!-- GALLERY GRID SECTION -->
+<section class="section" id="gallery-section">
   <div class="container">
-    <!-- Filter -->
+    <!-- Filter buttons -->
     <div class="gallery-filter" id="gallery-filter-btns">
       <?php foreach(['all'=>'All Work','hair'=>'Hair','bridal'=>'Bridal','nails'=>'Nails','spa'=>'Spa','grooming'=>'Grooming','skin'=>'Skin'] as $k=>$v): ?>
-      <button class="tab-btn <?=$k==='all'?'active':''?>" data-filter="<?=$k?>"><?=$v?></button>
+      <button class="tab-btn <?=$k==='all'?'active':''?>" data-gallery-filter="<?=$k?>"><?=$v?></button>
       <?php endforeach; ?>
     </div>
 
-    <!-- Masonry -->
+    <!-- Gallery Grid - Masonry Style -->
     <div class="gallery-grid" id="gallery-grid">
-      <?php foreach($gallery_items as $i=>$item): 
-        $cat_key = strtolower(trim($item['category']));
+      <?php 
+      $allItems = [];
+      foreach($gallery_items as $item):
+        $allItems[] = $item;
       ?>
-      <div class="gallery-item img-zoom-wrap" data-cat="<?=htmlspecialchars($cat_key)?>" style="height:<?=$heights[$i % count($heights)]?>">
-        <img src="<?=$IMG?>/<?=htmlspecialchars($item['image'])?>" alt="<?=htmlspecialchars($item['title'])?>" loading="lazy">
+      <div class="gallery-item" data-cat="<?=$item['category']?>" data-all-index="<?=count($allItems)?>">
+        <img src="<?=$IMG?>/<?=$item['image']?>" alt="<?=$item['title']?>" loading="lazy">
         <div class="gallery-overlay">
-          <div style="text-align:center;color:#fff;padding:1rem;">
-            <div class="gallery-zoom-icon" style="margin:0 auto .5rem;"><i class="fas fa-expand"></i></div>
-            <span style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;"><?=htmlspecialchars($item['title'])?></span>
-          </div>
+          <div class="gallery-zoom-icon"><i class="fas fa-expand"></i></div>
+          <div class="gallery-title"><?=$item['title']?></div>
         </div>
       </div>
       <?php endforeach; ?>
     </div>
+
+    <!-- See More / Show Less Button -->
+    <div class="gallery-see-more-container" id="gallery-see-more-wrap" data-reveal="fade-up">
+      <button id="gallery-see-more-btn" class="btn-see-more">
+        See More <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
   </div>
 </section>
 
-<!-- Before / After -->
-<section class="section section-dark">
+<!-- BEFORE & AFTER SECTION -->
+<section class="section section-dark" id="before-after-section">
   <div class="container">
     <div class="section-header" data-reveal="fade-up">
       <span class="section-eyebrow">Transformations</span>
-      <h2 class="section-title">Before & After</h2>
+      <h2 class="section-title">Before &amp; After</h2>
       <p class="section-subtitle">Witness the Muna's difference — stunning real transformations.</p>
     </div>
-    <div class="grid-3">
-      <?php $ba=[
-        ['service-haircolor.jpg','gallery-hair.jpg','Hair Colour Transformation','Dull to vibrant — full balayage colour makeover'],
-        ['service-facial.jpg','service-facial.jpg','Skin Glow Treatment','Dull skin to radiant glow after gold facial'],
-        ['service-bridal.jpg','service-bridal.jpg','Bridal Makeover','Natural look to full flawless bridal makeup'],
-      ]; foreach($ba as $b): ?>
-      <div class="glass-gold" style="border-radius:var(--radius-lg);overflow:hidden;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
-          <div style="position:relative;">
-            <img src="<?=$IMG?>/<?=$b[0]?>" alt="Before" style="width:100%;height:200px;object-fit:cover;filter:grayscale(60%);">
-            <div style="position:absolute;bottom:.5rem;left:.5rem;background:rgba(0,0,0,.7);color:#999;font-size:.65rem;letter-spacing:.1em;padding:.2rem .5rem;border-radius:4px;">BEFORE</div>
+
+    <div class="before-after-grid" id="before-after-grid">
+      <?php foreach($before_after_items as $idx => $b): 
+        $isHidden = $idx >= $BA_SHOW_LIMIT;
+      ?>
+      <div class="ba-card <?=$isHidden ? 'ba-hidden' : ''?>" data-ba-index="<?=$idx?>">
+        <div class="ba-images">
+          <div class="ba-before">
+            <img src="<?=$IMG?>/<?=$b[0]?>" alt="Before">
+            <span class="ba-label before-label">BEFORE</span>
           </div>
-          <div style="position:relative;">
-            <img src="<?=$IMG?>/<?=$b[1]?>" alt="After" style="width:100%;height:200px;object-fit:cover;">
-            <div style="position:absolute;bottom:.5rem;right:.5rem;background:rgba(201,169,110,.9);color:#000;font-size:.65rem;letter-spacing:.1em;padding:.2rem .5rem;border-radius:4px;font-weight:700;">AFTER</div>
+          <div class="ba-after">
+            <img src="<?=$IMG?>/<?=$b[1]?>" alt="After">
+            <span class="ba-label after-label">AFTER</span>
           </div>
         </div>
-        <div style="padding:1.2rem;text-align:center;">
-          <h3 style="font-size:var(--fs-md);margin-bottom:.3rem;"><?=$b[2]?></h3>
-          <p style="font-size:var(--fs-sm);"><?=$b[3]?></p>
+        <div class="ba-content">
+          <h3><?=$b[2]?></h3>
+          <p><?=$b[3]?></p>
         </div>
       </div>
       <?php endforeach; ?>
     </div>
+
+    <?php if(count($before_after_items) > $BA_SHOW_LIMIT): ?>
+    <div class="ba-see-more-container" data-reveal="fade-up" id="ba-see-more-container">
+      <button id="ba-see-more-btn" class="btn-see-more">
+        See More Transformations <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 
+<!-- CTA SECTION -->
 <section class="cta-section section" style="background-image:url('<?=$IMG?>/about-interior.jpg');background-size:cover;position:relative;">
   <div style="position:absolute;inset:0;background:rgba(5,3,1,.88);"></div>
   <div class="container" style="position:relative;z-index:1;text-align:center;" data-reveal="fade-up">
@@ -102,89 +190,5 @@ $heights=['280px','240px','300px','250px','270px','240px','260px','290px','240px
   <img class="lightbox-img" src="" alt="">
   <button class="lightbox-next"><i class="fas fa-chevron-right"></i></button>
 </div>
-
-<script>
-(function(){
-  const btns  = document.querySelectorAll('#gallery-filter-btns .tab-btn');
-  const items = document.querySelectorAll('#gallery-grid .gallery-item[data-cat]');
-
-  // Normalise: strip spaces, lowercase — so "Hair Care" → "hair care" matches filter "hair"
-  function catMatches(itemCat, filter) {
-    if (filter === 'all') return true;
-    // exact match first
-    if (itemCat === filter) return true;
-    // partial match: "hair care" should match filter "hair"
-    return itemCat.includes(filter);
-  }
-
-  function applyFilter(filter) {
-    items.forEach(item => {
-      const cat = (item.dataset.cat || '').toLowerCase().trim();
-      const show = catMatches(cat, filter);
-      // Use display:none so masonry columns reflow correctly
-      item.style.display    = show ? 'block' : 'none';
-      item.style.marginBottom = show ? '' : '0';
-    });
-  }
-
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      applyFilter(btn.dataset.filter);
-    });
-  });
-
-  // Show all on load
-  applyFilter('all');
-
-  // Lightbox
-  const lb    = document.getElementById('lightbox');
-  const lbImg = lb?.querySelector('.lightbox-img');
-  let allSrcs = [];
-  let cur = 0;
-
-  function buildSrcs() {
-    // Only visible items in lightbox
-    allSrcs = [...items]
-      .filter(i => i.style.display !== 'none')
-      .map(i => i.querySelector('img')?.src)
-      .filter(Boolean);
-  }
-
-  items.forEach(item => {
-    item.addEventListener('click', () => {
-      buildSrcs();
-      const src = item.querySelector('img')?.src;
-      cur = allSrcs.indexOf(src);
-      if (cur < 0) cur = 0;
-      if (lbImg) lbImg.src = allSrcs[cur];
-      lb?.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    });
-  });
-
-  lb?.querySelector('.lightbox-close')?.addEventListener('click', () => {
-    lb.classList.remove('active'); document.body.style.overflow = '';
-  });
-  lb?.querySelector('.lightbox-prev')?.addEventListener('click', () => {
-    cur = (cur - 1 + allSrcs.length) % allSrcs.length;
-    if (lbImg) lbImg.src = allSrcs[cur];
-  });
-  lb?.querySelector('.lightbox-next')?.addEventListener('click', () => {
-    cur = (cur + 1) % allSrcs.length;
-    if (lbImg) lbImg.src = allSrcs[cur];
-  });
-  lb?.addEventListener('click', e => {
-    if (e.target === lb) { lb.classList.remove('active'); document.body.style.overflow = ''; }
-  });
-  document.addEventListener('keydown', e => {
-    if (!lb?.classList.contains('active')) return;
-    if (e.key === 'Escape') { lb.classList.remove('active'); document.body.style.overflow = ''; }
-    if (e.key === 'ArrowLeft') lb.querySelector('.lightbox-prev')?.click();
-    if (e.key === 'ArrowRight') lb.querySelector('.lightbox-next')?.click();
-  });
-})();
-</script>
 
 <?php include __DIR__ . '/php/footer.php'; ?>
