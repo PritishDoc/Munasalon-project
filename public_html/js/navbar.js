@@ -135,4 +135,37 @@
     // ── Ripple on all .btn elements ──────────
     $$('.btn, .btn-gold, .btn-book, .btn-outline').forEach(window.LuxeGlow.addRipple);
 
+    // ── Fix bfcache (back/forward) style loss ──
+    window.addEventListener('pageshow', (event) => {
+        if (!event.persisted) return;
+
+        // 0. FIRST: purge any orphaned .ripple spans that survived bfcache.
+        //    This is the PRIMARY cause of the button shape collapse — a ripple
+        //    span injected on click, frozen mid-animation at scale(4) inside the
+        //    button, then restored by bfcache still at that bloated size.
+        //    _purgeAllRipples() is defined in utils.js and also runs on pagehide,
+        //    but we run it here too as an absolute safety net.
+        document.querySelectorAll('.ripple').forEach(r => r.remove());
+
+        // 1. Loading screen: ALWAYS force-hide immediately — no conditional.
+        loadingScreen?.classList.add('hidden');
+        document.body.classList.add('page-loaded');
+
+        // 2. Body overflow + mobile menu: reset unconditionally.
+        document.body.style.overflow = '';
+        closeMenu();
+
+        // 3. Navbar scroll state.
+        const y = window.scrollY;
+        navbar?.classList.toggle('scrolled', y > 60);
+        navbar?.classList.remove('nav-hidden');
+        lastScroll = y;
+
+        // 4. Ripple: idempotent (data-ripple-bound guard in utils.js).
+        $$('.btn, .btn-gold, .btn-book, .btn-outline').forEach(window.LuxeGlow.addRipple);
+
+        // 5. Scroll reveal.
+        window.LuxeGlow.initReveal();
+    });
+
 })();

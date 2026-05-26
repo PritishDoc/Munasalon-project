@@ -1,6 +1,6 @@
 /* ============================================
    LuxeGlow Salon – Utility Helpers
-   js/utils.js  |  v2.0.1
+   js/utils.js  |  v2.0.2
    ============================================ */
 'use strict';
 
@@ -40,19 +40,111 @@ function showToast(msg, type = 'info', duration = 3500) {
 }
 
 // ── Ripple on click ───────────────────────────
+// Orphaned ripple fix: when the user clicks a button and the page
+// navigates immediately, the .6s ripple animation never completes,
+// animationend never fires, and the ripple <span> stays in the DOM.
+// bfcache freezes that bloated span inside the button — on restore
+// it renders at scale(4), completely destroying the button shape.
+//
+// Two-pronged fix:
+//   1. pagehide: remove ALL ripple spans before the page enters bfcache.
+//   2. pageshow: remove any that somehow survived, then force-repaint.
+//   3. addRipple guard: never stack duplicate listeners (data-ripple-bound).
+//   4. Added CSS containment to prevent ripple from affecting button size
+function _purgeAllRipples() {
+    document.querySelectorAll('.ripple').forEach(r => r.remove());
+}
+window.addEventListener('pagehide', _purgeAllRipples);
+window.addEventListener('pageshow', _purgeAllRipples);
+
 function addRipple(btn) {
+    if (btn.dataset.rippleBound) return; // never stack listeners
+    btn.dataset.rippleBound = '1';
+    
+    // Ensure button has proper overflow and position for ripple containment
+    if (getComputedStyle(btn).position === 'static') {
+        btn.style.position = 'relative';
+    }
+    if (getComputedStyle(btn).overflow !== 'hidden') {
+        btn.style.overflow = 'hidden';
+    }
+    
     btn.addEventListener('click', (e) => {
+        // Remove any leftover ripple spans on this button first
+        btn.querySelectorAll('.ripple').forEach(r => r.remove());
+        
         const rect = btn.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
+        // Use the smaller dimension to prevent oversized ripples
+        const size = Math.min(rect.width, rect.height) * 1.5;
         const x = e.clientX - rect.left - size / 2;
         const y = e.clientY - rect.top - size / 2;
+        
         const ripple = document.createElement('span');
         ripple.className = 'ripple';
-        ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+        // Critical: set max-width/height to prevent button expansion
+        ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            pointer-events: none;
+            transform: scale(0);
+            animation: rippleEffect 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            z-index: 1;
+            will-change: transform, opacity;
+        `;
+        
         btn.appendChild(ripple);
-        ripple.addEventListener('animationend', () => ripple.remove());
+        
+        // Primary cleanup: animationend
+        ripple.addEventListener('animationend', () => {
+            if (ripple.parentNode) ripple.remove();
+        }, { once: true });
+        
+        // Safety net: force-remove after animation duration + buffer
+        setTimeout(() => {
+            if (ripple.parentNode) ripple.remove();
+        }, 600);
     });
 }
+
+// Add global style for ripple animation if not already present
+(function addRippleAnimationStyle() {
+    if (!document.querySelector('#ripple-style')) {
+        const style = document.createElement('style');
+        style.id = 'ripple-style';
+        style.textContent = `
+            @keyframes rippleEffect {
+                0% {
+                    transform: scale(0);
+                    opacity: 0.6;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 0;
+                }
+            }
+            .btn, .btn-gold, .btn-book, .btn-outline {
+                position: relative;
+                overflow: hidden;
+                isolation: isolate;
+            }
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.4);
+                pointer-events: none;
+                transform: scale(0);
+                animation: rippleEffect 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                z-index: 1;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+})();
 
 // ── Animated counter ──────────────────────────
 function animateCounter(el, target, duration = 2000, suffix = '') {
@@ -68,10 +160,13 @@ function animateCounter(el, target, duration = 2000, suffix = '') {
 }
 
 // ── Countdown Timer ───────────────────────────
+// Stores the interval ID on el._cdTimer so callers can clear it
+// before re-initialising (critical for bfcache restore safety).
 function initCountdown(endDate, el) {
+    if (el._cdTimer) { clearInterval(el._cdTimer); el._cdTimer = null; }
     const update = () => {
         const diff = new Date(endDate) - new Date();
-        if (diff <= 0) { el.textContent = 'Offer Ended'; return; }
+        if (diff <= 0) { el.textContent = 'Offer Ended'; clearInterval(el._cdTimer); return; }
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
@@ -84,7 +179,8 @@ function initCountdown(endDate, el) {
             <div class="countdown-unit"><span class="countdown-num">${fmt(s)}</span><span class="countdown-lbl">Sec</span></div>`;
     };
     update();
-    return setInterval(update, 1000);
+    el._cdTimer = setInterval(update, 1000);
+    return el._cdTimer;
 }
 
 // ── Format currency ───────────────────────────

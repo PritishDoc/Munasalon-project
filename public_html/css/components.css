@@ -13,6 +13,28 @@
     position: relative;
     display: flex; flex-direction: column;
 }
+
+/* Initially hide services beyond the limit */
+.service-card.service-hidden {
+    display: none;
+}
+
+/* Animation for showing services */
+.service-card.service-show-animation {
+    animation: serviceFadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes serviceFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .service-card:hover {
     transform: translateY(-8px);
     border-color: rgba(201,169,110,.35);
@@ -28,6 +50,40 @@
 .service-card-footer { display:flex; align-items:center; justify-content:space-between; gap:.5rem; flex-wrap:wrap; }
 .service-price { font-family:var(--font-serif); font-size:var(--fs-lg); color:var(--clr-gold); }
 .service-duration { font-size:var(--fs-xs); color:var(--clr-gray-400); display:flex; align-items:center; gap:.3rem; }
+
+/* See More Button Styles */
+#see-more-services-btn {
+    background: transparent;
+    color: var(--clr-white);
+    border: 1px solid #333;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#see-more-services-btn:hover {
+    background: rgba(201, 169, 110, 0.1);
+    border-color: var(--clr-gold);
+    color: var(--clr-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(201, 169, 110, 0.15);
+}
+
+#see-more-services-btn:active {
+    transform: translateY(0);
+}
+
+/* Icon rotation animation */
+#see-more-services-btn i {
+    transition: transform 0.3s ease;
+}
+
+#see-more-services-btn.loading i {
+    animation: rotateIcon 1s linear infinite;
+}
+
+@keyframes rotateIcon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
 /* ── Product Cards ────────────────────────── */
 .product-card {
@@ -149,6 +205,8 @@
     border-radius: var(--radius-md);
     cursor: pointer;
     display: block;
+    aspect-ratio: 4 / 3;   /* FIX: uniform ratio, no more height mismatches */
+    height: auto !important; /* FIX: override any inline height */
 }
 .gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform var(--t-slow) var(--ease-smooth); display:block; }
 .gallery-item:hover img { transform:scale(1.1); }

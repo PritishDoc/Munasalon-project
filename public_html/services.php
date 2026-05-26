@@ -4,6 +4,7 @@ require_once __DIR__ . '/php/db.php';
 $page_title  = "Services & Menu – Muna's Unisex Salon";
 $page_desc   = 'Explore LuxeGlow\'s full range of premium salon services including hair, skin, bridal, spa, nail art and men\'s grooming.';
 $active_page = 'services';
+$IMG = '/images';
 include __DIR__ . '/php/header.php';
 
 $all_services = $db->query("SELECT * FROM services ORDER BY category ASC, id ASC")->fetchAll();
@@ -38,7 +39,7 @@ if (empty($categories)) {
 
     <?php foreach($categories as $cat=>$services): ?>
     <div class="services-cat-panel <?=$cat===$first_cat?'active':''?>" data-category-panel="<?=htmlspecialchars($cat)?>" style="<?=$cat!==$first_cat?'display:none':''?>">
-      <div class="services-grid" data-stagger>
+      <div class="services-grid align-start">
         <?php foreach($services as $s): ?>
         <div class="service-card hover-lift">
           <div class="service-card-img">
@@ -71,7 +72,7 @@ if (empty($categories)) {
       <span class="section-eyebrow">Our Promise</span>
       <h2 class="section-title">Service Guarantee</h2>
     </div>
-    <div class="grid-3" data-stagger>
+    <div class="grid-3">
       <?php foreach([['⏱️','On-Time Service','We respect your time. Services start on schedule, always.'],['💯','Satisfaction Guaranteed','Not happy? We\'ll redo the service at no extra charge.'],['🔒','Safe & Hygienic','Hospital-grade sterilization for every tool and surface.']] as $g): ?>
       <div class="why-card"><div class="why-icon"><?=$g[0]?></div><h3><?=$g[1]?></h3><p><?=$g[2]?></p></div>
       <?php endforeach; ?>

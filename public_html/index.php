@@ -115,11 +115,21 @@ include __DIR__ . '/php/header.php';
       <h2 class="section-title">Our Premium Services</h2>
       <p class="section-subtitle">From hair to skin, bridal to grooming — every need covered by certified experts.</p>
     </div>
-    <div class="services-grid" data-stagger>
+    <!-- Services Grid Container -->
+    <div class="services-grid" id="services-grid-container">
       <?php
-      $services = $db->query("SELECT * FROM services ORDER BY id ASC LIMIT 8")->fetchAll();
-      foreach($services as $s): ?>
-      <div class="service-card hover-lift">
+      // Fetch all services from database
+      $allServices = $db->query("SELECT * FROM services ORDER BY id ASC")->fetchAll();
+      $servicesToShow = 6; // Number of services to show initially
+      $totalServices = count($allServices);
+      $hasMoreServices = $totalServices > $servicesToShow;
+      
+      // Loop through services and display only first 6 initially
+      foreach($allServices as $index => $s): 
+        // Add hidden class for services beyond the 6th item
+        $hiddenClass = ($index >= $servicesToShow) ? 'service-hidden' : '';
+      ?>
+      <div class="service-card hover-lift <?= $hiddenClass ?>">
         <div class="service-card-img">
           <img src="<?=$IMG?>/<?=htmlspecialchars($s['image'])?>" alt="<?=htmlspecialchars($s['title'])?>" loading="lazy">
         </div>
@@ -137,7 +147,18 @@ include __DIR__ . '/php/header.php';
       </div>
       <?php endforeach; ?>
     </div>
+    
+    <!-- See More Button (only if there are more than 6 services) -->
+    <?php if ($hasMoreServices): ?>
     <div style="text-align:center;margin-top:3rem;" data-reveal="fade-up">
+      <button id="see-more-services-btn" class="btn btn-outline" style="background: transparent; color: var(--clr-white); border: 1px solid #333;">
+        See More Services <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
+    
+    <!-- View All Services Link (always visible) -->
+    <div style="text-align:center;margin-top:2rem;" data-reveal="fade-up">
       <a href="/services.php" class="btn btn-outline">View All Services</a>
     </div>
   </div>
@@ -182,7 +203,7 @@ include __DIR__ . '/php/header.php';
       <span class="section-eyebrow">Why Muna's</span>
       <h2 class="section-title">The Muna's Difference</h2>
     </div>
-    <div class="grid-3" data-stagger>
+    <div class="grid-3">
       <?php foreach([
         ['🏆','Certified Professionals','Every stylist is certified and trained in latest international techniques.'],
         ['🧹','Hygienic Environment','Hospital-grade sterilization. Fresh towels, tools and products every visit.'],
@@ -239,7 +260,7 @@ include __DIR__ . '/php/header.php';
     </div>
 
     <!-- Ratings stats -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3rem;border-top:1px solid rgba(255,255,255,.06);padding-top:2rem;" data-stagger>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3rem;border-top:1px solid rgba(255,255,255,.06);padding-top:2rem;">
       <?php foreach([['4.9','Average Rating','⭐'],['15k+','Repeat Clients','👥'],['98%','Satisfaction Rate','✅']] as $rs): ?>
       <div style="text-align:center;">
         <div style="font-size:3rem;margin-bottom:.3rem;"><?=$rs[2]?></div>
@@ -262,11 +283,10 @@ include __DIR__ . '/php/header.php';
     </div>
     <?php
     $gal = $db->query("SELECT * FROM gallery ORDER BY id DESC LIMIT 6")->fetchAll();
-    $heights=['300px','240px','260px','250px','280px','240px'];
     ?>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;" data-stagger>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;align-items:start;">
       <?php foreach($gal as $i=>$g): ?>
-      <div class="gallery-item img-zoom-wrap" style="height:<?=$heights[$i % count($heights)]?>" data-cat="<?=htmlspecialchars($g['category'])?>">
+      <div class="gallery-item img-zoom-wrap" style="aspect-ratio:4/3;height:auto;" data-cat="<?=htmlspecialchars($g['category'])?>">
         <img src="<?=$IMG?>/<?=htmlspecialchars($g['image'])?>" alt="<?=htmlspecialchars($g['title'])?>" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         <div class="gallery-overlay">
           <div class="gallery-zoom-icon"><i class="fas fa-expand"></i></div>

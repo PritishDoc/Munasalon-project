@@ -47,7 +47,7 @@
             onEnter: elements => gsap.from(elements, {
                 opacity: 0, y: 50, stagger: .08, duration: .7, ease: 'power3.out'
             }),
-            start: 'top 88%'
+            start: 'top 95%'
         });
 
         // ── Product cards stagger ─────────────
@@ -55,7 +55,7 @@
             onEnter: elements => gsap.from(elements, {
                 opacity: 0, scale: .92, stagger: .07, duration: .6, ease: 'back.out(1.2)'
             }),
-            start: 'top 88%'
+            start: 'top 95%'
         });
 
         // ── Stats counter trigger ─────────────
@@ -75,7 +75,7 @@
             onEnter: elements => gsap.from(elements, {
                 opacity: 0, y: 40, rotation: 2, stagger: .1, duration: .7, ease: 'back.out(1.3)'
             }),
-            start: 'top 88%'
+            start: 'top 95%'
         });
 
         // ── Blog cards ───────────────────────
@@ -83,7 +83,7 @@
             onEnter: elements => gsap.from(elements, {
                 opacity: 0, y: 30, stagger: .1, duration: .6, ease: 'power3.out'
             }),
-            start: 'top 88%'
+            start: 'top 95%'
         });
 
         // ── Image parallax inside sections ────
@@ -104,15 +104,17 @@
         // ── Gallery items ─────────────────────
         ScrollTrigger.batch('.gallery-item', {
             onEnter: elements => gsap.from(elements, {
-                opacity: 0, scale: .88, stagger: .06, duration: .6, ease: 'power3.out'
+                opacity: 0, scale: .92, stagger: .06, duration: .6, ease: 'power3.out'
             }),
-            start: 'top 90%'
+            start: 'top 95%'
         });
 
         // ── Testimonial cards ─────────────────
-        gsap.from('.testimonial-card', {
-            opacity: 0, x: 60, stagger: .12, duration: .8, ease: 'power3.out',
-            scrollTrigger: { trigger: '.testimonials-slider', start: 'top 85%' }
+        ScrollTrigger.batch('.testimonial-card', {
+            onEnter: elements => gsap.from(elements, {
+                opacity: 0, x: 40, stagger: .1, duration: .7, ease: 'power3.out'
+            }),
+            start: 'top 90%'
         });
     }
 
@@ -127,5 +129,18 @@
     // ── Pure-CSS scroll reveal fallback ──────
     // (for environments without GSAP)
     window.LuxeGlow.initReveal();
+
+    // ── bfcache: refresh ScrollTrigger positions ──
+    // On bfcache restore the scroll position is restored by the browser
+    // but ScrollTrigger's internal metrics are stale (they were frozen in
+    // the snapshot).  We do NOT re-run initGSAP (that would duplicate all
+    // triggers and re-play all animations).  We only refresh positions so
+    // pinning, scrubbing and parallax work correctly after back-navigation.
+    window.addEventListener('pageshow', (e) => {
+        if (!e.persisted) return;
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh(true); // true = recalculate all trigger positions
+        }
+    });
 
 })();
