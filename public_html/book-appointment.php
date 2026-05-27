@@ -100,30 +100,20 @@ include __DIR__ . '/php/header.php';
               <label for="book_service">Service <span style="color:var(--clr-gold);">*</span></label>
               <select id="book_service" name="book_service" class="form-control" required>
                 <option value="">— Select a service —</option>
-                <optgroup label="✂️ Hair">
-                  <?php foreach(['Hair Cut – ₹299','Hair Spa – ₹799','Hair Coloring – ₹1,499','Balayage / Highlights – ₹2,499','Keratin Treatment – ₹3,999','Smoothening – ₹4,999'] as $s): ?>
-                  <option><?=$s?></option><?php endforeach; ?>
+                <?php
+                $all_services = $db->query("SELECT * FROM services ORDER BY category ASC, title ASC")->fetchAll();
+                $services_by_category = [];
+                foreach ($all_services as $s) {
+                    $services_by_category[$s['category']][] = $s;
+                }
+                foreach ($services_by_category as $cat => $srvs):
+                ?>
+                <optgroup label="<?= htmlspecialchars($cat) ?>">
+                  <?php foreach ($srvs as $s): ?>
+                  <option value="<?= htmlspecialchars($s['title'] . ' – ' . $s['price']) ?>"><?= htmlspecialchars($s['title'] . ' – ' . $s['price']) ?></option>
+                  <?php endforeach; ?>
                 </optgroup>
-                <optgroup label="✨ Skin">
-                  <?php foreach(['Facial – ₹999','Cleanup – ₹599','Detan – ₹699','Skin Polishing – ₹1,299','Gold Facial – ₹1,799'] as $s): ?>
-                  <option><?=$s?></option><?php endforeach; ?>
-                </optgroup>
-                <optgroup label="👰 Bridal">
-                  <?php foreach(['Bridal Makeup – ₹5,999','Pre-Bridal Package – ₹14,999','Groom Package – ₹3,499','Engagement Makeup – ₹3,999'] as $s): ?>
-                  <option><?=$s?></option><?php endforeach; ?>
-                </optgroup>
-                <optgroup label="🌿 Spa">
-                  <?php foreach(['Full Body Spa – ₹2,999','Aromatherapy – ₹1,999','Head Massage – ₹499','Back Massage – ₹799'] as $s): ?>
-                  <option><?=$s?></option><?php endforeach; ?>
-                </optgroup>
-                <optgroup label="🧔 Men's Grooming">
-                  <?php foreach(['Men\'s Haircut – ₹249','Beard Styling – ₹299','Hot Towel Shave – ₹199','Men\'s Grooming Package – ₹999'] as $s): ?>
-                  <option><?=$s?></option><?php endforeach; ?>
-                </optgroup>
-                <optgroup label="💅 Nails">
-                  <?php foreach(['Manicure – ₹399','Pedicure – ₹499','Nail Art – ₹499','Gel Nails – ₹799'] as $s): ?>
-                  <option><?=$s?></option><?php endforeach; ?>
-                </optgroup>
+                <?php endforeach; ?>
               </select>
             </div>
 
