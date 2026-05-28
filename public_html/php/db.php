@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 // php/db.php
 $db_file = __DIR__ . '/../database.sqlite';
 $is_new = !file_exists($db_file);
@@ -75,4 +75,6 @@ try {
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
 }
-?>
+?> -->
+
+
