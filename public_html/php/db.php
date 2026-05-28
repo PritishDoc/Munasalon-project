@@ -24,7 +24,10 @@ try {
                 description TEXT,
                 price TEXT,
                 duration TEXT,
-                image TEXT
+                image TEXT,
+                attributes TEXT,
+                amenities TEXT,
+                related_services TEXT
             );
 
             CREATE TABLE products (

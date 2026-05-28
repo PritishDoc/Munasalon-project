@@ -13,6 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $duration = $_POST['duration'];
     $image = $_POST['current_image'] ?? '';
 
+    // Handle JSON fields
+    $attributes = '[]';
+    if (isset($_POST['attr_keys']) && isset($_POST['attr_values'])) {
+        $attrs = [];
+        foreach ($_POST['attr_keys'] as $i => $key) {
+            if (trim($key) !== '' && trim($_POST['attr_values'][$i]) !== '') {
+                $attrs[] = ['key' => trim($key), 'value' => trim($_POST['attr_values'][$i])];
+            }
+        }
+        $attributes = json_encode($attrs);
+    }
+    
+    $amenities = isset($_POST['amenities']) ? json_encode($_POST['amenities']) : '[]';
+    $related_services = isset($_POST['related_services']) ? json_encode($_POST['related_services']) : '[]';
+
     // Handle image upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/../images/';
@@ -23,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($id) {
-        $stmt = $db->prepare("UPDATE services SET title=?, category=?, description=?, price=?, duration=?, image=? WHERE id=?");
-        $stmt->execute([$title, $category, $description, $price, $duration, $image, $id]);
+        $stmt = $db->prepare("UPDATE services SET title=?, category=?, description=?, price=?, duration=?, image=?, attributes=?, amenities=?, related_services=? WHERE id=?");
+        $stmt->execute([$title, $category, $description, $price, $duration, $image, $attributes, $amenities, $related_services, $id]);
     } else {
-        $stmt = $db->prepare("INSERT INTO services (title, category, description, price, duration, image) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $category, $description, $price, $duration, $image]);
+        $stmt = $db->prepare("INSERT INTO services (title, category, description, price, duration, image, attributes, amenities, related_services) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$title, $category, $description, $price, $duration, $image, $attributes, $amenities, $related_services]);
     }
     header('Location: /admin/services.php');
     exit;
@@ -137,6 +152,28 @@ admin_header('Manage Services');
                 <input type="text" name="title" required value="<?= $edit_service ? htmlspecialchars($edit_service['title']) : '' ?>">
             </div>
             <div class="form-group">
+                <label>Category</label>
+                <select name="category" required style="width:100%; padding:0.5rem; background:#111; color:#fff; border:1px solid #333;">
+                    <?php 
+                    $cats = [
+                        'General', 
+                        'Hair Styling Services', 
+                        'Beard Grooming Services', 
+                        'Manicure & Pedicure Services', 
+                        'Face Care Services', 
+                        'Hair Care Services', 
+                        'Waxing Services', 
+                        'Hair Treatment Services', 
+                        'Make Up Services'
+                    ];
+                    $current_cat = $edit_service ? $edit_service['category'] : 'General';
+                    foreach($cats as $c): 
+                    ?>
+                    <option value="<?= htmlspecialchars($c) ?>" <?= $c === $current_cat ? 'selected' : '' ?>><?= htmlspecialchars($c) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>Description</label>
                 <textarea name="description" rows="3" required><?= $edit_service ? htmlspecialchars($edit_service['description']) : '' ?></textarea>
             </div>
@@ -150,6 +187,84 @@ admin_header('Manage Services');
                     <input type="text" name="duration" placeholder="e.g. 60 min" required value="<?= $edit_service ? htmlspecialchars($edit_service['duration']) : '' ?>">
                 </div>
             </div>
+            <div class="form-group">
+                <label>Attributes (e.g., Color type: Black)</label>
+                <div id="attributes-container">
+                    <?php 
+                    $attrs = $edit_service && $edit_service['attributes'] ? json_decode($edit_service['attributes'], true) : [];
+                    if (!empty($attrs)):
+                        foreach ($attrs as $attr):
+                    ?>
+                    <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;" class="attr-row">
+                        <input type="text" name="attr_keys[]" placeholder="Key (e.g. Hair Type)" value="<?= htmlspecialchars($attr['key']) ?>" style="flex:1; padding:0.5rem; background:#111; color:#fff; border:1px solid #333;">
+                        <input type="text" name="attr_values[]" placeholder="Value (e.g. Fine)" value="<?= htmlspecialchars($attr['value']) ?>" style="flex:1; padding:0.5rem; background:#111; color:#fff; border:1px solid #333;">
+                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0.5rem;"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <?php 
+                        endforeach;
+                    endif;
+                    ?>
+                </div>
+                <button type="button" class="btn" onclick="addAttrRow()" style="margin-top:0.5rem; font-size:0.8rem;">+ Add Attribute</button>
+                <script>
+                function addAttrRow() {
+                    const div = document.createElement('div');
+                    div.style.display = 'flex';
+                    div.style.gap = '0.5rem';
+                    div.style.marginBottom = '0.5rem';
+                    div.className = 'attr-row';
+                    div.innerHTML = `
+                        <input type="text" name="attr_keys[]" placeholder="Key" style="flex:1; padding:0.5rem; background:#111; color:#fff; border:1px solid #333;">
+                        <input type="text" name="attr_values[]" placeholder="Value" style="flex:1; padding:0.5rem; background:#111; color:#fff; border:1px solid #333;">
+                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0.5rem;"><i class="fas fa-trash"></i></button>
+                    `;
+                    document.getElementById('attributes-container').appendChild(div);
+                }
+                </script>
+            </div>
+
+            <div class="form-group">
+                <label>Amenities</label>
+                <div style="display:flex; flex-wrap:wrap; gap:1rem;">
+                    <?php 
+                    $amenity_options = [
+                        'Pet Friendly' => 'fas fa-paw',
+                        'Waiting Chair' => 'fas fa-chair',
+                        'Work Friendly' => 'fas fa-laptop',
+                        'Hand Sanitiser' => 'fas fa-hands-wash',
+                        'AC' => 'fas fa-snowflake',
+                        'WiFi' => 'fas fa-wifi',
+                        'Coffee/Tea' => 'fas fa-coffee',
+                        'Parking' => 'fas fa-parking'
+                    ];
+                    $selected_amenities = $edit_service && isset($edit_service['amenities']) ? json_decode($edit_service['amenities'], true) : [];
+                    if (!is_array($selected_amenities)) $selected_amenities = [];
+                    foreach ($amenity_options as $aname => $aicon): 
+                    ?>
+                    <label style="display:flex; align-items:center; gap:0.5rem; background:#111; padding:0.5rem; border-radius:4px; cursor:pointer;">
+                        <input type="checkbox" name="amenities[]" value="<?= htmlspecialchars($aname) ?>" <?= in_array($aname, $selected_amenities) ? 'checked' : '' ?>>
+                        <i class="<?= $aicon ?>"></i> <?= $aname ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Related Services</label>
+                <select name="related_services[]" multiple style="width:100%; height:120px; background:#111; color:#fff; border:1px solid #333; padding:0.5rem;">
+                    <?php
+                    $all_srvs = $db->query("SELECT id, title FROM services ORDER BY title ASC")->fetchAll();
+                    $selected_related = $edit_service && isset($edit_service['related_services']) ? json_decode($edit_service['related_services'], true) : [];
+                    if (!is_array($selected_related)) $selected_related = [];
+                    foreach ($all_srvs as $srv):
+                        if ($edit_service && $srv['id'] == $edit_service['id']) continue;
+                    ?>
+                    <option value="<?= $srv['id'] ?>" <?= in_array($srv['id'], $selected_related) ? 'selected' : '' ?>><?= htmlspecialchars($srv['title']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <small style="color:#888;">Hold Ctrl (Windows) or Cmd (Mac) to select multiple.</small>
+            </div>
+
             <div class="form-group">
                 <label>Image Upload</label>
                 <input type="file" name="image" accept="image/*" style="padding:.5rem; background:#111;">

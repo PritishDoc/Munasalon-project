@@ -48,7 +48,12 @@
 @media(max-width:768px){ .stats-grid { grid-template-columns:repeat(2,1fr); } .stats-grid .stat-card:nth-child(2) { border-right:none; } .stats-grid .stat-card { border-bottom:1px solid rgba(255,255,255,.06); } }
 
 /* ── Services Grid ────────────────────────── */
-.services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.5rem; }
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    align-items: start;   /* FIX: prevents cards stretching / overlapping in implicit rows */
+}
 
 /* ── Offer Grid ───────────────────────────── */
 .offers-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; }
@@ -68,28 +73,80 @@
 @media(max-width:640px){ .gallery-grid { columns:2; } }
 
 /* ── Testimonials Slider ──────────────────── */
-.testimonials-slider { position:relative; overflow:hidden; }
-.testimonials-track { display:flex; transition:transform .6s var(--ease-out); }
-.testimonials-track .testimonial-card { flex:0 0 calc(33.333% - 1rem); margin-right:1.5rem; }
-.slider-controls { display:flex; gap:1rem; justify-content:center; margin-top:2rem; }
+.testimonials-slider { position:relative; overflow:hidden; width:100%; }
+.testimonials-track {
+    display: flex;
+    gap: 1.5rem;                         /* FIX: use gap instead of margin-right */
+    transition: transform .6s var(--ease-out);
+    will-change: transform;
+}
+/* FIX: correct flex-basis accounting for 2 gaps across 3 cards = 3rem / 3 = 1rem per card */
+.testimonials-track .testimonial-card {
+    flex: 0 0 calc(33.333% - 1rem);
+    min-width: 0;                        /* FIX: prevent blowout */
+}
+.slider-controls { display:flex; gap:1rem; justify-content:center; align-items:center; margin-top:2rem; }
 .slider-btn { width:44px; height:44px; border-radius:50%; border:1px solid rgba(201,169,110,.3); background:transparent; color:var(--clr-gold); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all var(--t-base); }
 .slider-btn:hover { background:var(--clr-gold); color:var(--clr-black); }
 .slider-dots-row { display:flex; gap:.5rem; justify-content:center; margin-top:1rem; }
 .slider-dot-sm { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.2); border:none; cursor:pointer; transition:all var(--t-base); padding:0; }
 .slider-dot-sm.active { background:var(--clr-gold); width:18px; border-radius:3px; }
-@media(max-width:900px){ .testimonials-track .testimonial-card { flex-basis:calc(50% - 1rem); } }
-@media(max-width:600px){ .testimonials-track .testimonial-card { flex-basis:100%; } }
+/* FIX responsive breakpoints to match gap-based flex-basis */
+@media(max-width:900px){
+    .testimonials-track .testimonial-card { flex: 0 0 calc(50% - 0.75rem); }
+}
+@media(max-width:600px){
+    .testimonials-track .testimonial-card { flex: 0 0 100%; }
+}
 
 /* ── CTA Banner ───────────────────────────── */
 .cta-section { position:relative; overflow:hidden; background:var(--clr-black-mid); padding-block:6rem; text-align:center; }
 .cta-section::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(201,169,110,.08) 0%,transparent 70%); pointer-events:none; }
 .cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem; }
 
-/* ── About Timeline ───────────────────────── */
-.timeline { position:relative; padding-left:2rem; }
-.timeline::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,var(--clr-gold),transparent); }
-.timeline-item { position:relative; margin-bottom:2.5rem; padding-left:1.5rem; }
-.timeline-item::before { content:''; position:absolute; left:-2rem; top:.4rem; width:12px; height:12px; background:var(--clr-gold); border-radius:50%; box-shadow:0 0 0 4px rgba(201,169,110,.2); }
+/* ── About Timeline ─────────────────────── */
+/*
+  Strategy: both line and dot use transform:translateX(-50%) anchored
+  to the same left value, so they are GUARANTEED to share the same
+  centre line regardless of sizes — no maths needed.
+  Anchor = 0px (left edge of .timeline), shared via --tl-x.
+*/
+.timeline {
+    --tl-x: 8px;           /* single anchor for line & dot */
+    position: relative;
+    padding-left: 2.5rem;  /* 40px — enough space for dot (14px) + gap */
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: var(--tl-x);
+    transform: translateX(-50%);   /* centers 2px line ON --tl-x */
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--clr-gold), transparent);
+}
+.timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding-left: 1rem;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    /* .timeline-item starts 40px inside .timeline (due to padding-left:2.5rem).
+       We want dot centre at --tl-x (8px) from .timeline left.
+       So dot left (from item) = 8px - 40px = -32px.
+       Then translateX(-50%) shifts it left by 7px → centre at -32+7 = -25px from item = 40-25=15px from timeline.
+       Simpler: set left = --tl-x - padding-left = 8px - 40px = -32px, then translateX(-50%). */
+    left: calc(var(--tl-x) - 2.5rem);
+    transform: translateX(-50%);   /* centers 14px dot ON --tl-x */
+    top: .3rem;
+    width: 14px;
+    height: 14px;
+    background: var(--clr-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px rgba(201,169,110,.15);
+}
 .timeline-year { font-size:var(--fs-xs); color:var(--clr-gold); letter-spacing:.2em; text-transform:uppercase; margin-bottom:.3rem; }
 .timeline-item h3 { font-size:var(--fs-lg); color:var(--clr-white); margin-bottom:.4rem; }
 .timeline-item p  { font-size:var(--fs-sm); color:var(--clr-gray-400); }
@@ -141,4 +198,42 @@
     .hero { min-height:100svh; }
     .hero-deco { display:none; }
     .stats-grid { grid-template-columns:1fr 1fr; }
+}
+
+/* code for services-> see More & show less feature */
+
+/* ============================================
+   Services Grid & See More (Add to sections.css)
+   ============================================ */
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Initially hide services beyond limit */
+.service-card.service-hidden {
+    display: none;
+}
+
+/* See More Container */
+.services-see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
 }

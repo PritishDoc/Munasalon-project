@@ -67,12 +67,6 @@ $active_page = $active_page ?? '';
 </head>
 <body class="<?= htmlspecialchars($active_page) ?>-page">
 
-<!-- ── Loading Screen ──────────────────────── -->
-<div id="loading-screen">
-    <div class="loader-logo">✦ Muna's Salon</div>
-    <div class="loader-bar"><div class="loader-fill"></div></div>
-    <p style="color:#666;font-family:'Inter',sans-serif;font-size:.75rem;letter-spacing:.2em;">UNISEX SALON & BEAUTY PARLOUR</p>
-</div>
 
 <!-- ── Cookie Consent ──────────────────────── -->
 <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie consent">

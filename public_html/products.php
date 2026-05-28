@@ -8,6 +8,10 @@ include __DIR__ . '/php/header.php';
 $products = [
   ['🧴','Face Wash','Gentle Foaming Cleanser','Daily gentle cleanser for all skin types.','₹299','₹399','skincare','4.8',42,'Bestseller'],
   ['💧','Moisturizer','Daily Hydrating Cream','Light, non-greasy daily moisturizer.','₹449','₹599','skincare','4.7',38,'New'],
+  ['🧴','Face Wash','Gentle Foaming Cleanser','Daily gentle cleanser for all skin types.','₹299','₹399','skincare','4.8',42,'Bestseller'],
+  ['💧','Moisturizer','Daily Hydrating Cream','Light, non-greasy daily moisturizer.','₹449','₹599','skincare','4.7',38,'New'],
+  ['🧴','Face Wash','Gentle Foaming Cleanser','Daily gentle cleanser for all skin types.','₹299','₹399','skincare','4.8',42,'Bestseller'],
+  ['💧','Moisturizer','Daily Hydrating Cream','Light, non-greasy daily moisturizer.','₹449','₹599','skincare','4.7',38,'New'],
   ['✨','Hair Serum','Frizz Control Serum','Anti-frizz serum for smooth, shiny hair.','₹599','₹799','hair','4.9',65,'Bestseller'],
   ['🧼','Shampoo','Nourishing Repair Shampoo','Deep repair formula for damaged hair.','₹349','₹450','hair','4.6',29,''],
   ['🌸','Conditioner','Moisture Conditioner','Intense hydration for smooth, soft hair.','₹299','₹399','hair','4.7',51,'Organic'],
@@ -18,7 +22,13 @@ $products = [
   ['💅','Nail Care','Strengthening Nail Kit','Complete kit for healthy, strong nails.','₹349','₹499','nails','4.6',24,''],
   ['💋','Lip Care','Luxury Lip Balm Set','Hydrating lip balms in 5 flavors.','₹199','₹299','skincare','4.9',87,'Bestseller'],
   ['🧖','Body Spa Cream','Luxury Body Butter','Rich body cream for silky smooth skin.','₹599','₹799','body','4.7',41,'New'],
+  ['💎','Hair Mask','Keratin Repair Mask','Deep conditioning for damaged hair.','₹449','₹599','hair','4.8',34,'Bestseller'],
+  ['🌹','Rose Water','Natural Toner','Hydrating and soothing rose water mist.','₹199','₹299','skincare','4.6',56,'Organic'],
+  ['🪒','Shaving Kit','Premium Shaving Set','Complete kit with razor, brush and cream.','₹899','₹1299','grooming','4.7',23,'New'],
+  ['💪','Body Lotion','Intense Hydration Lotion','24-hour moisture for soft skin.','₹349','₹499','body','4.5',41,''],
 ];
+
+$PRODUCTS_SHOW_LIMIT = 8;
 ?>
 
 <section style="padding:12rem 0 4rem;background:linear-gradient(135deg,#0a0500,#1a1000);text-align:center;position:relative;">
@@ -35,21 +45,26 @@ $products = [
     <!-- Search -->
     <div class="product-search"><i class="fas fa-search"></i><input type="text" id="product-search" placeholder="Search products..."></div>
 
-    <!-- Filter Tabs -->
-    <div class="tabs" style="justify-content:center;margin-bottom:2rem;" id="product-tab-row">
-      <?php foreach(['all'=>'All','hair'=>'Hair','skincare'=>'Skincare','grooming'=>'Grooming','body'=>'Body','nails'=>'Nails'] as $k=>$v): ?>
-      <button class="tab-btn <?=$k==='all'?'active':''?>" data-filter="<?=$k?>"><?=$v?></button>
-      <?php endforeach; ?>
+    <!-- Filter Tabs - Using data-products-filter -->
+    <div class="tabs" style="justify-content:center;margin-bottom:2rem;" id="products-filter-tabs">
+      <button class="tab-btn active" data-products-filter="all">All</button>
+      <button class="tab-btn" data-products-filter="hair">Hair</button>
+      <button class="tab-btn" data-products-filter="skincare">Skincare</button>
+      <button class="tab-btn" data-products-filter="grooming">Grooming</button>
+      <button class="tab-btn" data-products-filter="body">Body</button>
+      <button class="tab-btn" data-products-filter="nails">Nails</button>
     </div>
 
     <!-- Products Grid -->
-    <div class="products-grid" id="products-grid" data-stagger>
-      <?php foreach($products as $p): ?>
-      <div class="product-card" data-cat="<?=$p[6]?>" data-name="<?=$p[1]?>">
+    <div class="products-grid" id="products-grid">
+      <?php foreach($products as $idx => $p): ?>
+      <div class="product-card" data-category="<?=$p[6]?>" data-product-name="<?=htmlspecialchars($p[1])?>">
         <div class="product-card-img" style="background:linear-gradient(135deg,#1a1000,#2a1800);display:flex;align-items:center;justify-content:center;font-size:4.5rem;">
           <?=$p[0]?>
           <div class="product-card-badges">
-            <?php if($p[9]): ?><span class="badge <?=$p[9]==='Organic'?'badge-green':($p[9]==='New'?'badge-rose':'badge-gold')?>"><?=$p[9]?></span><?php endif; ?>
+            <?php if($p[9]): ?>
+              <span class="badge <?=$p[9]==='Organic'?'badge-green':($p[9]==='New'?'badge-rose':'badge-gold')?>"><?=$p[9]?></span>
+            <?php endif; ?>
           </div>
           <div class="product-card-actions">
             <button class="product-action-btn" data-action="wishlist" title="Wishlist"><i class="far fa-heart"></i></button>
@@ -57,8 +72,8 @@ $products = [
           </div>
         </div>
         <div class="product-card-body">
-          <h3><?=$p[1]?></h3>
-          <p style="font-size:.78rem;color:var(--clr-gray-400);margin-bottom:.5rem;"><?=$p[2]?><br><span style="font-size:.72rem;opacity:.7;"><?=$p[3]?></span></p>
+          <h3><?=htmlspecialchars($p[1])?></h3>
+          <p style="font-size:.78rem;color:var(--clr-gray-400);margin-bottom:.5rem;"><?=htmlspecialchars($p[2])?><br><span style="font-size:.72rem;opacity:.7;"><?=htmlspecialchars($p[3])?></span></p>
           <div class="product-rating">
             <span class="stars">★★★★★</span><span><?=$p[7]?> (<?=$p[8]?>)</span>
           </div>
@@ -72,26 +87,16 @@ $products = [
       </div>
       <?php endforeach; ?>
     </div>
+
+    <!-- See More / Show Less Button for Products -->
+    <?php if(count($products) > $PRODUCTS_SHOW_LIMIT): ?>
+    <div class="products-see-more-container" data-reveal="fade-up">
+      <button id="products-see-more-btn" class="btn-see-more">
+        See More Products <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
-
-<script>
-(function(){
-  const search = document.getElementById('product-search');
-  const cards = document.querySelectorAll('.product-card');
-  const tabs = document.querySelectorAll('#product-tab-row .tab-btn');
-  let activeFilter = 'all';
-  function filter(){
-    const q = search.value.toLowerCase();
-    cards.forEach(c => {
-      const matchCat = activeFilter === 'all' || c.dataset.cat === activeFilter;
-      const matchQ   = !q || c.dataset.name.toLowerCase().includes(q);
-      c.style.display = matchCat && matchQ ? '' : 'none';
-    });
-  }
-  tabs.forEach(t => t.addEventListener('click',()=>{ tabs.forEach(b=>b.classList.remove('active')); t.classList.add('active'); activeFilter=t.dataset.filter; filter(); }));
-  search?.addEventListener('input', filter);
-})();
-</script>
 
 <?php include __DIR__ . '/php/footer.php'; ?>

@@ -14,6 +14,8 @@ if (count($all_blogs) > 0) {
 } else {
     $posts = [];
 }
+
+$BLOG_SHOW_LIMIT = 6; // Number of posts to show initially
 ?>
 
 <section style="padding:12rem 0 4rem;background:linear-gradient(135deg,#0a0500,#1a1000);text-align:center;position:relative;">
@@ -55,16 +57,20 @@ if (count($all_blogs) > 0) {
 
     <!-- Category filter -->
     <div class="tabs" style="justify-content:center;margin-bottom:2.5rem;" id="blog-tabs">
-      <?php foreach(['All','Hair Care','Skin Care','Bridal','Grooming','Nail Art'] as $c): ?>
+      <?php 
+      $categories = ['All', 'Hair Care', 'Skin Care', 'Bridal', 'Grooming', 'Nail Art'];
+      foreach($categories as $c): 
+      ?>
       <button class="tab-btn <?=$c==='All'?'active':''?>" data-blog-cat="<?=$c==='All'?'all':strtolower(str_replace(' ','-',$c))?>"><?=$c?></button>
       <?php endforeach; ?>
     </div>
 
-    <div class="grid-3" id="blog-grid" data-stagger>
-      <?php foreach($posts as $b):
+    <div class="blog-grid" id="blog-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;">
+      <?php foreach($posts as $idx => $b):
         $cat_slug = strtolower(str_replace(' ','-',htmlspecialchars($b['category'])));
+        $isHidden = $idx >= $BLOG_SHOW_LIMIT;
       ?>
-      <div class="blog-card hover-lift" data-blog-cat="<?=$cat_slug?>">
+      <div class="blog-card hover-lift <?=$isHidden ? 'blog-hidden' : ''?>" data-blog-cat="<?=$cat_slug?>" data-blog-index="<?=$idx?>">
         <div class="blog-card-img">
             <img src="/images/<?=htmlspecialchars($b['image'])?>" style="width:100%;height:100%;object-fit:cover;">
         </div>
@@ -82,6 +88,15 @@ if (count($all_blogs) > 0) {
       </div>
       <?php endforeach; ?>
     </div>
+    
+    <!-- See More / Show Less Button for Blog Posts -->
+    <?php if(count($posts) > $BLOG_SHOW_LIMIT): ?>
+    <div class="blog-see-more-container" data-reveal="fade-up" id="blog-see-more-container">
+      <button id="blog-see-more-btn" class="btn-see-more">
+        See More Posts <i class="fas fa-arrow-down"></i>
+      </button>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 
@@ -97,18 +112,5 @@ if (count($all_blogs) > 0) {
     </form>
   </div>
 </section>
-
-<script>
-document.getElementById('blog-tabs')?.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('#blog-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.blogCat;
-    document.querySelectorAll('#blog-grid .blog-card').forEach(c=>{
-      c.style.display = f==='all'||c.dataset.blogCat===f?'':'none';
-    });
-  });
-});
-</script>
 
 <?php include __DIR__ . '/php/footer.php'; ?>
